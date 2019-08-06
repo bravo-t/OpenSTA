@@ -72,7 +72,15 @@ HNAME ({PIN_NAME}|{BUS_NAME}|{MIXED_NAME})([\/.]({PIN_NAME}|{BUS_NAME}|{MIXED_NA
 TOKEN ({ALPHA}|{DIGIT}|_)({ALPHA}|{DIGIT}|[._\-])*
 /* bus_naming_style : %s[%d] ; */
 BUS_STYLE "%s"{BUS_LEFT}"%d"{BUS_RIGHT}
-PUNCTUATION [,\:;|(){}+*&!'=]
+
+/* Fix the unquoted expr issue, e.g. */
+/* power_down_function : !VDD+VSS; */
+/* PUNCTUATION [,\:;|(){}+*&!'=] */
+PUNCTUATION [,\:;|(){}]
+OP	"'"|"!"|"^"|"*"|"&"|"+"|"|"|1|0
+PIN_EXPR {OP}*({PIN_NAME}+{OP}+)*{PIN_NAME}+
+/* Fix complete */
+
 TOKEN_END {PUNCTUATION}|[ \t\r\n]
 EOL \r?\n
 %%
@@ -100,6 +108,7 @@ EOL \r?\n
 {MIXED_NAME}{TOKEN_END} |
 {HNAME}{TOKEN_END} |
 {BUS_STYLE}{TOKEN_END} |
+{PIN_EXPR}{TOKEN_END} |
 {TOKEN}{TOKEN_END} {
 	/* Push back the TOKEN_END character. */
 	yyless(LibertyLex_leng - 1);
