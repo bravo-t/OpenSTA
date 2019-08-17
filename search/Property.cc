@@ -763,6 +763,25 @@ getProperty(const Pin *pin,
     return pinSlewProperty(pin, TransRiseFall::rise(), MinMax::min(), sta);
   else if (stringEqual(property, "actual_fall_transition_min"))
     return pinSlewProperty(pin, TransRiseFall::fall(), MinMax::min(), sta);
+  else if (stringBeginEqual(property, "vertex.")) {
+	  auto graph = sta->ensureGraph();
+	  Vertex *vertex, *bidirect_drvr_vertex;
+	  graph->pinVertices(pin, vertex, bidirect_drvr_vertex);
+	  if (stringEqual(property, "vertex.is_reg_clock_pin"))
+		return PropertyValue(vertex->isRegClk());
+	  else if (stringEqual(property, "vertex.is_constrtained"))
+		return PropertyValue(vertex->isConstrained());
+	  else if (stringEqual(property, "vertex.has_checks"))
+	    return PropertyValue(vertex->hasChecks());
+	  else if (stringEqual(property, "vertex.is_constant"))
+	  	return PropertyValue(vertex->isConstant());
+	  else if (stringEqual(property, "vertex.is_clock_gating_enable"))
+	  	return PropertyValue(vertex->isGatedClkEnable());
+	  else if (stringEqual(property, "vertex.is_check_clock_pin"))
+	    return PropertyValue(vertex->isCheckClk());
+	  else
+		throw PropertyUnknown("pin", property);
+  }
 
   else
     throw PropertyUnknown("pin", property);

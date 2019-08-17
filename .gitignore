@@ -80,3 +80,6 @@ Makefile
 /verilog/VerilogParse.h
 /verilog/VerilogParse.output
 /verilog/VerilogParse.hh
+.cproject
+.project
+.settings/language.settings.xml
